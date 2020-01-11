@@ -4,6 +4,11 @@ from bs4 import BeautifulSoup
 import os
 
 
+# 配置
+# 添加防盗链
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                            'Chrome/51.0.2704.63 Safari/537.36', 'Referer': 'https://www.mzitu.com/all/'}
+
 
 def getPage(page):
     '''
@@ -65,10 +70,7 @@ def download(filedir, url):
 
 
 
-# 配置
-# 添加防盗链
-headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                            'Chrome/51.0.2704.63 Safari/537.36', 'Referer': 'https://www.mzitu.com/all/'}
+
 
 
 url = 'https://www.mzitu.com/all/'
