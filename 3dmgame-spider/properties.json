@@ -1,0 +1,9 @@
+{
+	"mysqlInfo": {
+		"user": "root",
+		"passwd": "1214",
+		"database": "design_pattern"
+	},
+	"rootDir": "C:\\Users\\asus\\Desktop\\hello\\eclipse-workspace\\forum\\WebContent\\images\\",
+	"imgUrl": "http://localhost:8080/forum/images/"
+}

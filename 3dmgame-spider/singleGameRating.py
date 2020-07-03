@@ -3,9 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import json
-import mysql.connector
-import uuid
 import time
+import mysql.connector
 import getGameIntroduction
 
 
@@ -15,6 +14,9 @@ import getGameIntroduction
 2. 当前用户评分还需要获取吗？
 3. 下载图片时，还需要指定 ret.encoding 吗？
 4. 多条插入由于重复失败时，应该进一步细化，单挑插入
+5. gameInfoDiv.find(name='div', class_='score-box clear') 空
+   gameInfoDiv.find(name='div', class_='score-box ') 空 
+   gameInfoDiv.find(name='div', class_='score-box') 正确，不为空
 """
 
 
@@ -27,12 +29,12 @@ rootDir = ''
 # 图像 url
 imgUrl = ''
 # 单机游戏主链接
-singleGameUrl = 'https://dl.3dmgame.com/'
+singleGameUrl = 'https://www.3dmgame.com/phb.html'
 
 
 
 
-def getPageUrl(start, end):
+def getPageUrl():
 	"""
 	功能：
 		爬取[start, end) 区间内页面的链接列表
@@ -52,18 +54,14 @@ def getPageUrl(start, end):
 			最后一页：all_all_2009_hot/
 	"""
 	pageUrlList = []
-	if start >= end:
-		print('Error: 获取页面链接失败，区间为空')
-
-	for i in range(end - start):
-		pageUrlList.append('all_all_' + str(start+i) + '_hot/')
+	pageUrlList.append('https://www.3dmgame.com/phb.html')
 
 	return pageUrlList
 
 
 
 
-def getGameUrl(pageUrl):
+def getGameItem(pageUrl):
 	"""
 	功能：
 		获取指定页面中游戏链接的列表
@@ -75,36 +73,44 @@ def getGameUrl(pageUrl):
 		游戏链接列表
 		list
 	"""
-	gameUrlList = []
+	gameItemList = []
 
-	ret = requests.get(url=singleGameUrl+pageUrl, headers=headers)
+	ret = requests.get(url=pageUrl, headers=headers)
 	ret.encoding = ret.apparent_encoding
 
 	soup = BeautifulSoup(ret.text, 'html.parser')
-	# gameLis = soup.find('body').find(name='div', class_='content').find(name='div', class_='listwrap').find(name='ul', class_='downllis').find_all('li')
-	gameImgs = soup.find('body').find(name='div', class_='content').find(name='div', class_='listwrap').find(name='ul', class_='downllis').find_all(name='div', class_='img')
+	gameDivs = soup.find('body').find(name='div', class_='content').find(name='div', class_='Phbright').find_all(name='div', class_='phlist')
 
-	count = 0
-	for img in gameImgs:
-		count += 1
-		if count == 1 or count == 2:
-			continue
-		url_a = img.find('a').get('href')
-		gameUrlList.append(url_a)
+	for div in gameDivs:
+		itemList = []
 
-	return gameUrlList
+		# 添加 gameUrl
+		url_a = div.find('a').get('href')
+		itemList.append(url_a)
+
+		# 添加 gameLabel
+		labelList = []
+		labelAs = div.find(name='ul', class_='infolis').find_all('li')[-1].find_all('a')
+		for a in labelAs:
+			labelList.append(a.text)
+		itemList.append(labelList)
+
+		gameItemList.append(itemList)
+
+	return gameItemList
 
 
 
 
 
-def getGameData(gameUrl):
+def getGameData(rating, gameItem):
 	"""
 	功能：
 		根据游戏链接获取游戏信息
 
 	参数：
-		gameUrl 游戏链接
+		rating 游戏排名
+		gameItem 游戏条目
 
 	返回:
 		游戏信息字典
@@ -112,60 +118,61 @@ def getGameData(gameUrl):
 	"""
 	gameDataDict = {}
 
+	# 解析游戏条目
+	gameUrl = gameItem[0]
+	labelList = gameItem[1]
+
 	ret = requests.get(url=gameUrl, headers=headers)
 	ret.encoding = ret.apparent_encoding
 
 	soup = BeautifulSoup(ret.text, 'html.parser')
-	gameInfoDiv = soup.find('body').find(name='div', class_='content clear game').find(name='div', class_='gameinfo')
+	gameInfoDiv = soup.find('body').find(name='div', class_='content zqwrap').find(name='div', class_='ZQ_Left')
 
 	# 游戏ID
-	gameDataDict['id'] = str(uuid.uuid1())
+	gameDataDict['id'] = rating
 	# 游戏名
-	gameDataDict['name'] = gameInfoDiv.find('h1').text
+	gameInfo = gameInfoDiv.find(name='div', class_='Gminfo')
+	gameDataDict['name'] = gameInfo.find('h1').text
+	# 游戏英文名
+	gameDataDict['EnglishName'] = gameInfo.find(name='div', class_='info').find('span').text
 	# 游戏类型
-	gameDataLis = gameInfoDiv.find('ul').find_all('li')
-	gameDataDict['type'] = gameDataLis[0].find('span').text
-	# 开发发行
-	gameDataDict['release'] = gameDataLis[1].find('span').text
-	# 发售日期
-	gameDataDict['releaseDate'] = transformDate(gameDataLis[2].find('span').text)
-	# 整理时间
-	gameDataDict['arrangeDate'] = transformDate(gameDataLis[3].find('span').text)
+	gameDataLis = gameInfoDiv.find('ul', class_='lis').find_all('li')
+	gameDataDict['type'] = gameDataLis[0].text
+	# 游戏开发
+	gameDataDict['develop'] = gameDataLis[1].text
 	# 游戏平台
-	gameDataDict['platform'] = gameDataLis[4].find('span').text
-	# 官方网站
-	gameDataDict['website'] = '暂无' if gameDataLis[5].find('a') is None else gameDataLis[5].find('a').get('href')
-	# 标签
-	labelList = []
-	iList = gameDataLis[6].find_all('i')
-	for i in iList:
-		labelList.append(i.find('a').text)
-	gameDataDict['label'] = json.dumps(labelList, ensure_ascii=False)		# 数组转为json字符串
+	platformList = []
+	aList = gameDataLis[2].find_all('a')
+	for a in aList:
+		platformList.append(a.text)
+	gameDataDict['platform'] = json.dumps(platformList, ensure_ascii=False)
+	# 游戏发行
+	gameDataDict['release'] = gameDataLis[3].text
+	# 发售日期
+	gameDataDict['releaseDate'] = transformDate(gameDataLis[4].find('a').text)
 	# 游戏语言
-	gameDataDict['language'] = gameDataLis[7].find('span').text
+	gameDataDict['language'] = gameDataLis[5].text
+	# 官方网站
+	gameDataDict['website'] = '暂无' if gameDataLis[6].find('a') is None else gameDataLis[6].find('a').get('href')
+
+	# 标签
+	gameDataDict['label'] = json.dumps(labelList, ensure_ascii=False)		# 数组转为json字符串
+
 	# 游戏评分
-	scoreDiv = gameInfoDiv.find(name='div', class_='scorewrap')
+	scoreDiv = gameInfoDiv.find(name='div', class_='score-box').find(name='div', class_='scorewrap')
 	gameDataDict['score'] = scoreDiv.find(name='div', class_='processingbar').find('font').text
 	# 游戏评分人数
 	gameDataDict['raterNum'] = scoreDiv.find(name='div', class_='txt').find('span').text
 	# 游戏图像
 	gameDataDict['img'] = gameInfoDiv.find(name='div', class_='img').find('img').get('src')
 
-
 	# 游戏简介
-	gameIntroductionDiv = soup.find('body').find(name='div', class_='content clear game').find(name='div', class_='Content_L').find(name='div', class_='GmL_1')
-	if(gameIntroductionDiv == None):
-		# 解决BeautifulSoup出错
-		gameIntroductionDiv = soup.find(name='div', class_='GmL_1')
-	# print(gameIntroductionDiv.prettify())
-	gameIntroduction = gameIntroductionDiv.find('p').text
+	gameIntroductionDiv = soup.find(name='div', class_='content zqwrap').find(name='div', class_='ZQ_Left').find(name='div', class_='buy').find(name='div', class_='miaoshu')
+	gameIntroduction = gameIntroductionDiv.text
 	print(gameIntroduction)
-	
-	getGameIntroduction.insertIntroduction(gameDataDict['id'], 's_'+gameDataDict['name'], gameIntroduction)
-
+	getGameIntroduction.insertIntroduction('s'+str(gameDataDict['id']), 'sr_'+gameDataDict['name'], gameIntroduction)
 
 	return gameDataDict
-
 
 
 def decodeImgUrl(gameImgUrl):
@@ -185,8 +192,6 @@ def decodeImgUrl(gameImgUrl):
 	return imgUrl + imgPath
 
 
-
-	
 
 def getConn():
 	"""
@@ -217,7 +222,7 @@ def innsertData(conn, gameDatas):
 	"""
 	try: 
 		cursor = conn.cursor()
-		sql = 'insert into single_game (game_id, game_name, game_type, game_release, game_release_date, game_arrange_date, game_platform, game_website, game_label, game_language, game_score, game_rater_num, game_img) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+		sql = 'insert into single_game_rating (game_id, game_name, game_english_name, game_type, game_develop, game_platform, game_release, game_release_date, game_language, game_website, game_label, game_score, game_rater_num, game_img) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 		cursor.executemany(sql, gameDatas)
 		conn.commit()
 	except mysql.connector.Error as err:
@@ -241,6 +246,7 @@ def transformDate(dateStr):
 		正确日期格式的字符串
 	"""
 	try:
+		dateStr = dateStr[0:10]
 		time.strptime(dateStr, '%Y-%m-%d')
 		return dateStr
 	except:
@@ -305,8 +311,9 @@ def getJson(filePath):
 	with open(filePath, 'r') as fp:
 		# 异步读取
 		properties = json.load(fp)
-		rootDir = properties['rootDir'] + 'singleGame\\'
-		imgUrl = properties['imgUrl'] + 'singleGame/'
+		rootDir = properties['rootDir'] + 'singleGameRating\\'
+		imgUrl = properties['imgUrl'] + 'singleGameRating/'
+
 
 
 
@@ -316,14 +323,16 @@ def getJson(filePath):
 if __name__ == '__main__':
 	getJson('properties.json')
 	conn = getConn()
-	pageUrlList = getPageUrl(1, 3)
+	pageUrlList = getPageUrl()
 	for pageUrl in pageUrlList:
-		gameUrlList = getGameUrl(pageUrl)
+		gameItemList = getGameItem(pageUrl)
 		
 		gameDatas = []
-		for gameUrl in gameUrlList:
+		rating = 0
+		for gameItem in gameItemList:
+			rating += 1
 			# 获取游戏数据
-			tempDict = getGameData(gameUrl)
+			tempDict = getGameData(rating, gameItem)
 			# 根据真实图像链接，下载图像
 			downloadImg(tempDict['img'])
 			# 修改图像链接，为本网站地址
@@ -332,7 +341,6 @@ if __name__ == '__main__':
 			tempTuple = tuple(tempDict.values())
 			gameDatas.append(tempTuple)
 			print(tempTuple)
-
 			# break
 		
 		rowcount = innsertData(conn=conn, gameDatas=gameDatas)
@@ -340,4 +348,3 @@ if __name__ == '__main__':
 
 	conn.close()
 	print('单机游戏爬取完成')
-	

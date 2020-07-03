@@ -5,6 +5,8 @@ import os
 import json
 import mysql.connector
 import uuid
+import time
+import getGameIntroduction
 
 
 
@@ -14,7 +16,9 @@ import uuid
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
                             'Chrome/51.0.2704.63 Safari/537.36', 'Referer': 'https://www.3dmgame.com/'}
 # 数据保存根目录
-rootDir = 'D:\\spider\\3dmgame\\androidGame\\'
+rootDir = ''
+# 图像 url
+imgUrl = ''
 # 安卓游戏主链接
 androidGameUrl = 'https://shouyou.3dmgame.com/android/'
 
@@ -130,7 +134,33 @@ def getGameData(gameUrl):
 	# 游戏图像
 	gameDataDict['img'] = gameInfoDiv.find(name='div', class_='img').find('img').get('src')
 
+
+	# 游戏简介
+	gameIntroductionDiv = soup.find('body').find(name='div', class_='content').find(name='div', class_='detail_cont').find(name='div', class_='cont_L').find(name='div', class_='detail-txt')
+	gameIntroduction = gameIntroductionDiv.find('p').text
+
+	print(gameIntroduction)
+	
+	getGameIntroduction.insertIntroduction(gameDataDict['id'], 'a_'+gameDataDict['name'], gameIntroduction)
 	return gameDataDict
+
+
+
+def decodeImgUrl(gameImgUrl):
+	"""
+	功能：
+		解析游戏图像链接
+
+	参数：
+		游戏图像链接
+
+	返回：
+		解析后的图像链接
+	"""
+	global imgUrl
+
+	imgPath = gameImgUrl[gameImgUrl.rindex('/', 0, gameImgUrl.rindex('/', 0, gameImgUrl.rindex('/'))) + 1:]
+	return imgUrl + imgPath
 
 
 
@@ -236,11 +266,30 @@ def downloadImg(imgUrl):
 
 
 
+def getJson(filePath):
+	"""
+	功能：
+		读取json配置文件
+
+	参数: 
+		filePath  配置文件地址
+
+	"""
+	global rootDir
+	global imgUrl
+
+	with open(filePath, 'r') as fp:
+		# 异步读取
+		properties = json.load(fp)
+		rootDir = properties['rootDir'] + 'androidGame\\'
+		imgUrl = properties['imgUrl'] + 'androidGame/'
+
 
 
 
 
 if __name__ == '__main__':
+	getJson('properties.json')
 	conn = getConn()
 	pageUrlList = getPageUrl(1, 2)
 	for pageUrl in pageUrlList:
@@ -248,12 +297,16 @@ if __name__ == '__main__':
 		
 		gameDatas = []
 		for gameUrl in gameUrlList:
+			# 获取游戏数据
 			tempDict = getGameData(gameUrl)
+			# 根据真实图像链接，下载图像
+			downloadImg(tempDict['img'])
+			# 修改图像链接，为本网站地址
+			tempDict['img'] = decodeImgUrl(tempDict['img'])
+			# 字典转为元组，方便插入数据
 			tempTuple = tuple(tempDict.values())
 			gameDatas.append(tempTuple)
-
 			print(tempTuple)
-			downloadImg(tempTuple[-1])
 
 		rowcount = innsertData(conn=conn, gameDatas=gameDatas)
 		print(str(rowcount) + '条记录插入成功' if rowcount != -1 else '插入失败')

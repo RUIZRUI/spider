@@ -5,6 +5,8 @@ import os
 import json
 import mysql.connector
 import uuid
+import time
+import getGameIntroduction
 
 
 
@@ -13,7 +15,9 @@ import uuid
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
                             'Chrome/51.0.2704.63 Safari/537.36', 'Referer': 'https://www.3dmgame.com/'}
 # 数据保存根目录
-rootDir = 'D:\\spider\\3dmgame\\onlineGame\\'
+rootDir = ''
+# 图像 url
+imgUrl = ''
 # 网页游戏主链接
 onlineGameUrl = 'https://ol.3dmgame.com/'
 
@@ -132,7 +136,7 @@ def getGameData(gameUrl):
 	aList = gameDataLis[8].find_all('a')
 	for a in aList:
 		labelList.append(a.text)
-	gameDataDict['label'] = json.dumps(labelList)		# 数组转为json字符串
+	gameDataDict['label'] = json.dumps(labelList, ensure_ascii=False)		# 数组转为json字符串
 	# 游戏评分
 	scoreDiv = gameInfoDiv.find(name='div', class_='scorewrap')
 	gameDataDict['score'] = scoreDiv.find(name='div', class_='processingbar').find('font').text
@@ -141,8 +145,33 @@ def getGameData(gameUrl):
 	# 游戏图像
 	gameDataDict['img'] = gameInfoDiv.find('img').get('src')
 
+	# 游戏简介
+	gameIntroductionDiv = soup.find(name='div', class_='content').find(name='div', class_='item2')
+	if gameIntroductionDiv == None:
+		gameIntroduction = None
+	else:
+		gameIntroduction = gameIntroductionDiv.find('p').text
+	print(gameIntroduction)
+	getGameIntroduction.insertIntroduction(gameDataDict['id'], 'o_'+gameDataDict['name'], gameIntroduction)
+
 	return gameDataDict
 
+
+def decodeImgUrl(gameImgUrl):
+	"""
+	功能：
+		解析游戏图像链接
+
+	参数：
+		游戏图像链接
+
+	返回：
+		解析后的图像链接
+	"""
+	global imgUrl
+
+	imgPath = gameImgUrl[gameImgUrl.rindex('/', 0, gameImgUrl.rindex('/')) + 1:]
+	return imgUrl + imgPath
 
 
 
@@ -221,12 +250,29 @@ def downloadImg(imgUrl):
 		fp.write(ret.content)
 
 
+def getJson(filePath):
+	"""
+	功能：
+		读取json配置文件
 
+	参数: 
+		filePath  配置文件地址
+
+	"""
+	global rootDir
+	global imgUrl
+
+	with open(filePath, 'r') as fp:
+		# 异步读取
+		properties = json.load(fp)
+		rootDir = properties['rootDir'] + 'onlineGame\\'
+		imgUrl = properties['imgUrl'] + 'onlineGame/'
 
 
 
 
 if __name__ == '__main__':
+	getJson('properties.json')
 	conn = getConn()
 	pageUrlList = getPageUrl(1, 2)
 	for pageUrl in pageUrlList:
@@ -234,11 +280,16 @@ if __name__ == '__main__':
 
 		gameDatas = []
 		for gameUrl in gameUrlList:
+			# 获取游戏数据
 			tempDict = getGameData(gameUrl)
+			# 根据真实图像链接，下载图像
+			downloadImg(tempDict['img'])
+			# 修改图像链接，为本网站地址
+			tempDict['img'] = decodeImgUrl(tempDict['img'])
+			# 字典转为元组，方便插入数据
 			tempTuple = tuple(tempDict.values())
 			gameDatas.append(tempTuple)
 			print(tempTuple)
-			downloadImg(tempTuple[-1])
 
 		rowcount = innsertData(conn=conn, gameDatas=gameDatas)
 		print(str(rowcount) + '条记录插入成功' if rowcount != -1 else '插入失败')
