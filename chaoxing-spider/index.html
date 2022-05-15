@@ -1,0 +1,1361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>面向对象方法与C++程序设计2022-作业</title><link rel="stylesheet" type="text/css" href="/space/new/moocIndex/css/teacherHeader.css"/>
+<link href="/space/new/moocIndex/css/moocLeft.css" type="text/css" rel="stylesheet"/><link href="/space/new/moocIndex/css/ZuoYe.css?2020-0617-1931" type="text/css" rel="stylesheet"/>
+	<link href="/css/courselist/teacherclass.css?v=2021-1224-1429" rel="stylesheet" type="text/css" />
+<link href="/css/courselist/teacherclassCH.css" rel="stylesheet" type="text/css" />
+<link href="/space/new/worklist/css/dir.css?v=2020-0617-1610" rel="stylesheet" type="text/css" />
+	<script src="/space/new/js/jquery.min.js"></script>
+<script src="/space/new/js/right.js?v=2019-1025-1800"></script>
+<script language="javascript" type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="/space/new/js/pageUtil.js"></script>
+<script type="text/javascript" src="/space/exam/js/workPaper.js?v=2019-0726-1100"></script>
+<script src="/space/new/js/wayer_v1.2.mini.js" ></script>
+<script src="/space/new/worklist/js/workdirectory.js?v=2020-0617-1757" ></script>
+<script src="/space/new/worklist/js/clamp.min.js?v=2020-0607-1679" ></script>
+
+<script>
+	$(function() {
+		$("input[name='sw']").keypress(function(event){
+    		if(event.keyCode==13){
+    			searchWork();
+    		}
+    	});
+		
+		$("#CyList li").hover(function() {
+			$(this).addClass("Hover");
+		},function() {
+			$(this).removeClass("Hover");
+		});
+		$("#CyList .btnGreen").click(function() {
+			var par = $(this).parent().parent().parent(),
+				reply = par.next(),
+				height = reply.find(".CyAnswer").height() + 67;	// 67 = 25 + 2 + 20*2
+			
+			height = parseInt(reply.height()) == 0 ? height : "0px";
+			reply.animate({"height" : height},1000,function() {
+				reply.height("auto");
+				par.css("display", "none");
+			});
+			$("html, body").animate({"scrollTop" : par.offset().top},1000);
+		});
+		
+		$(".wrap-answer .Cysq").click(function() {
+			var wrap = $(this).parent().parent().parent().parent();
+			wrap.animate({"height":"0px"},1000,function() {
+				wrap.prev().css("display","block");
+			});
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(".lookLi").live('mouseenter',function(){
+		$(this).addClass("zhover");
+		$(this).find(".zho_close").show();
+	}).live('mouseleave',function(){
+		$(this).removeClass("zhover");
+		$(this).find(".zho_close").hide();
+	});
+</script>
+
+<style type="text/css">
+	.ulDiv ul li.zhover { position: relative;}
+	.ulDiv ul li .titTxt span { height: 21px;color:#424242;}
+	.ulDiv ul li .titTxt span i { display: inline-block;color:#424242; height: 21px; line-height: 21px; vertical-align: middle; font-style: normal;}
+	.ulDiv ul li .titTxt span a { display: none;}
+	.ulDiv ul li.zhover .titTxt #eTime a { display: inline-block; width: 21px; height: 21px; margin-left: 8px; background: url(../images/hover_04.gif) 0 -38px no-repeat; vertical-align: middle;}
+	.ulDiv ul li.zhover .titTxt #evaluation a { display: inline-block; width: 21px; height: 21px; margin-left: 8px; background: url(../images/hover_04.gif) 0 -38px no-repeat; vertical-align: middle; position:absolute; top:94px;right:0;}
+	.zho_close {position: absolute; right: 0; top: 0px; width: 30px; height: 30px; background: url(/space/images/delete.png) 0 0 no-repeat; display: none;}
+    .zmore { }
+    .zm_red {width:312px; padding:35px 0 46px; text-align:center;}
+    .zm_red a {display:inline-block; width:105px; height:105px;  background:url(../images/addkc.png) 0 -16px no-repeat;  text-align:center; vertical-align:middle; color:#999;-webkit-transition:all 0.3s ease; -moz-transition:all 0.3s ease; -o-transition:all 0.3s ease; -ms-transition:all 0.3s ease; transition:all 0.3s ease;}
+    .zm_red a:hover {text-align:center; vertical-align:middle; text-decoration:none; background:url(../images/addkc.png) 0px -210px no-repeat;}    
+    .ulDiv ul li {background-color: #fff;border: 1px solid #ccc;display: inline-block;letter-spacing: 0;margin-bottom: 24px;margin-right: 22px;overflow: hidden;padding: 10px 0 0;width: 315px;}
+	.ulDiv ul li .titTxt{border:none;height:125px;}
+	.ulDiv ul li .titOper{border-width:1px 0 0 0;}
+	.ulDiv ul li .titOper p{padding-top:13px;}
+	.huBtn{background:#fd8f26;border:none;color:#fff;}
+	.huBtn:hover{background:#fd8f26;border:none;color:#fff;}
+	.workLibBtn{margin-left:20px;font-size:14px;font-family:Microsoft YaHei,Arial,Helvetica;color:#FFF;display:inline-block;padding: 0 10px;height:28px;line-height:26px;background:#7b9e31;border-radius:3px;}
+	.editDate{height:49px;line-height:49px;background:#f0f0f0;border-bottom:1px solid #e0e0e0;font-size:16px;font-weight:bold;color:#333;padding:0 15px;}
+</style>
+</head>
+<body class="bg">
+	
+			<div class="mb10">
+            			                                    <script type="text/javascript" src="//3wfy-ans.chaoxing.com/passport/allHead.shtml"  charset="utf-8"></script>
+                                    </div>
+		
+
+
+	
+<style type="text/css">
+	 .workTip{display:none;width:8px;height:8px;background:red;border-radius:8px;position:absolute;top:-2px;right:0px}
+	 .testTip{display:none;width:8px;height:8px;background:red;border-radius:8px;position:absolute;top:-2px;right:0px}
+	 .cdataTip{display:none;width:8px;height:8px;background:red;border-radius:8px;position:absolute;top:-2px;right:0px}
+	 .workTipPd{display:none;width:8px;height:8px;background:red;border-radius:8px;position:absolute;top:10px;right:0px}
+     .experience{display:inline-block;padding:0 10px!important;height:28px;border:1px solid #e1e7f0;background: #F6F9FE;text-align:center;line-height:28px;font-size:14px;color:#5C7499;border-radius: 30px;margin-left: 20px;}
+     .experience:hover{opacity:0.7}
+	 .US{ display: inline-block;width: 170px;overflow: hidden;height: 40px;white-space: nowrap;text-overflow: ellipsis;line-height: 40px;}
+</style>
+
+<div  class="header" >
+			<div class="headermask"></div>
+		<div class="headerwrap">
+					<div class="menu" >
+				<div class="navhide">
+					<span></span>功能导航				</div>
+									<div class="navshow">
+						<ul>
+														    							        							      	  <li><a mode="yiji"  href="/mycourse/teachercourse?moocId=223137437&clazzid=51876029&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4"  title="首页">首页</a><label id="mytaskcount"></label></li>
+							        							    			    				 																		
+							        																																										                                                    <li><a mode="fuseMode" target="_blank" href="//mobilelearn.chaoxing.com/widget/pcpick/main/index?courseId=223137437&cpi=93844352&jclassId=51876029&fid=67889&enc=0a42d14fca324163cc1467660dd276e2" title="活动">活动</a></li>
+																																												    				    																																									<li><a  href="/moocAnalysis/statistics-tch?courseId=223137437&classId=51876029&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4" title="统计">统计</a></li>
+																																						    									<li><a  href="/coursedata?classId=51876029&courseId=223137437&type=1&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4" title="资料">资料</a></li>
+							    																															<li><a mode="fuseMode"   href="/schoolCourseInfo/getNotifyList?courseId=223137437&classId=51876029&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4" title="通知">通知</a></li>
+																							
+																																    									        <li><a  class="current" 																										href="/work/getAllWork?classId=51876029&courseId=223137437&isdisplaytable=2&mooc=1&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4"
+																								title="作业">作业  </a><i class="workTip"></i></li>
+																																																						<li><a mode="yiji"  href="/exam/test?classId=51876029&courseId=223137437&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4" title="考试">考试 </a><i class="testTip"></i></li>
+									
+																																															
+								
+																	<li><a  href='//mobilelearn.chaoxing.com/page/renwuNew/renwuList?courseId=223137437&classId=51876029&fid=67889' target="_blank" title="分组任务(PBL)">分组任务(PBL)</a></li>
+																
+														    							    									        								            <li><a mode="fuseMode"  href="/bbscircle/grouptopic?courseId=223137437&clazzid=51876029&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4" title="讨论">讨论</a></li>
+								
+								        							        							    															
+								
+														
+														
+														
+														
+								
+																																													<li><a      href="/teachingClassManage/teachingClassList?courseId=223137437&classId=51876029&ut=t&openc=31aea7eb6e55d090fdd12012590e10d4&cpi=93844352" title="管理">管理</a></li>
+																																									
+                            								<li>
+                                	<a href="/mycourse/teachercourse?moocId=223137437&clazzid=51876029&ut=t&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4&v=2"
+                                   class="experience" style="border-radius: 30px;font-size:14px;padding:0">体验新版</a>
+								</li>
+                            
+                            						</ul>
+					</div>
+							</div>
+							<div class="name">
+				<h1>
+				<span title="面向对象方法与C++程序设计2022">
+					<span class="fl CH">面向对象方法与...</span>
+					    					  	  <a id="head_a" class="fl"
+						  	    style="font-size: 14px;color: #7b9e31;margin-top:10px;" 						  	   href='javascript:void(0)' onclick="$('#tpsubmit').submit();">课程门户					  	  </a>
+					    					</span>
+				</span> 
+				<span></span>
+				</h1>
+			</div>
+				<form id="tpsubmit"   action="/course/223137437.html" target="_blank"   method="post">
+							<input type="hidden" name="edit" value="true"></input>
+					</form>
+	
+	</div>
+</div>
+<input type="hidden" id="cid" value="51876029">
+
+<script>
+    if ($(".navshow ul li").length > 11) {
+        $(".navshow ul li").css("margin-left", "4px");
+        $(".navshow ul li a").css("padding", "2px 5px");
+    }
+    if ($(".navshow ul li").length > 10) {
+		$(".navshow ul li").css("margin-left", "5px");
+		$(".navshow ul li a").css("padding", "2px 6px");
+    }
+    var showExpandread = '';
+    if (showExpandread == 'true') {
+		$(".navshow ul li").css("margin-left", "1px");
+		$(".navshow ul li a").css("padding", "0px 5px");
+		$(".experience").css("margin-left", "5px");
+	}
+
+    $('.navhide span').click(function () {
+
+		$(this).parent().hide(0,function(){
+		$('.navshow').show();
+		$('.navshow').animate({'margin-right':0 + 'px'},400);
+		});
+		});
+		$('.navshow span').click(function(){
+		$('.navhide').show();
+		$(this).parent().animate({'margin-right':-980 + 'px'},400,function(){
+		});
+		}); 
+	var hasWorkDot=false;
+	var hasExamDot=false;
+    var hasCourseDataDot=false;
+   //待批作业、待批考试红点数据加载
+      var redDot = function(){
+        jQuery.ajax({ 
+        	type: "get", 
+        	url : "/api/workTestPendingNew", 
+        	data: {
+            		classIds:$("#cid").val()
+        		}, 
+        	success: function(data){
+        	  var json= jQuery.parseJSON(data)[0];
+    			if('t'=='s') {
+    				if(json.hasWorkMsg){
+    				  $(".workTip").css("display","inline-block");
+					  hasWorkDot=true;
+    				}
+    				if(json.hasExamMsg){
+    					$(".testTip").css("display","inline-block");
+						hasExamDot=true;
+    				}
+                    if(json.hasCourseDataMsg){
+                        $(".cdataTip").css("display","inline-block");
+                        hasCourseDataDot=true;
+                    }
+    			}
+    		}
+        	
+        }); 
+      }
+  $(function(){
+  	var yiji = "false";
+  	var fuseMode = "false";
+  	var readyMode = "false";
+  	
+    if ("true" == yiji) {
+    	$(".navshow").find("li a").each(function(index, ele){
+	    	var type = $(this).attr("mode");
+	    	if (type != "yiji") {
+				$(this).attr("target", "");
+	    		$(this).attr("href", "javascript:;");
+	    		$(this).removeAttr("onclick");
+	    		$(this).click(function(){
+	    			alert("访问高峰时段，此功能暂时关闭");
+				});
+	    	}
+	    });
+    } else if ("true" == fuseMode) {
+    	$(".navshow").find("li a").each(function(index, ele){
+	    	var type = $(this).attr("mode");
+	    	if ("fuseMode" == type) {
+				$(this).attr("target", "");
+	    		$(this).attr("href", "javascript:;");
+	    		$(this).removeAttr("onclick");
+	    		$(this).click(function(){
+	    			alert("访问高峰时段，此功能暂时关闭");
+				});
+	    	}
+	    });
+    }
+  
+    if ('t' == 's' && "true" != readyMode) {
+		setTimeout('redDot()',1000);
+	}
+	
+	if($(".navshow ul li").length==1){
+		$(".navshow").css("display","none");
+	}
+  	
+  });
+  var rmWorkDot = function(classid,type,me){
+      if ('work' == type) {
+	 	location.href=$(me).attr("data");
+		return;
+	 }
+	 if('exam'==type && !hasExamDot){
+	 	location.href=$(me).attr("data");
+		return;
+	 }
+     if('cdata'==type && !hasCourseDataDot){
+        location.href=$(me).attr("data");
+        return;
+     }
+     
+     jQuery.ajax({ 
+        	type: "get",
+            dataType: "json", 
+        	url : "/api/removeRedDot", 
+        	data: {
+            		classId:classid,
+					type:type
+        		}, 
+        	success: function(data){
+                if(data && data.status){
+            		//success
+                    location.href=$(me).attr("data");
+                }
+    		}
+        	
+        });
+        
+    //location.href=$(me).attr("data");
+  }
+  
+</script>
+	
+
+
+
+
+
+<input type="hidden" id="tchWorkLibrary" value="true">
+
+<input type="hidden" id="tchPaperLibrary" value="true">
+
+
+<input type="hidden" id="endTime2">
+<input type="hidden" id="workId">	
+
+<div class="wrap1000 clearfix con">
+
+	<div class="width1100_smile" style="margin-top:20px;">
+		<div class="RightCon" id="RightCon">
+			<div class="radiusBG">
+				<!--导航开始-->
+								<!--导航结束-->
+				
+				<div class="CeYan" style="padding-top:0;">
+					<!--标题-->
+						<div class="CyTop" style="padding-top:12px;">
+							<p class="fr" style="line-height:28px;">
+																																										<a class="workLibBtn fr" title='作业库' href="/work/library?courseId=223137437&classId=51876029&ut=t&openc=31aea7eb6e55d090fdd12012590e10d4&cpi=93844352"><span>作业库</span></a>
+															</p>
+						</div>
+					<!--标题结束-->
+			
+										<!--搜素框开始-->
+					<div class="DySearch" style="padding-top:30px;">
+						<strong class="selectBox fl" onclick="clicked(this,event);" style="margin-right:10px;">
+							<p>07</p>
+							<ul style="display:none;" id="options">
+															<li><a href="javascript:void(0)" onclick="selectClass(this,'52601360','e7cd97e646964a4519d6247fe9c49f3b');" title="默认班级">默认班级
+																	</a></li>
+															<li><a href="javascript:void(0)" onclick="selectClass(this,'51876029','0a42d14fca324163cc1467660dd276e2');" title="07">07
+																	</a></li>
+															<li><a href="javascript:void(0)" onclick="selectClass(this,'51875938','298af05e3528b42771a0ad1ff8b02d3c');" title="02">02
+																	</a></li>
+														</ul>
+						</strong>
+						<a href="javascript:void(0);" class="viewNav fr updateworkview"><i class="list_ic"></i>列表视图</a>
+						<form id="subForm" action="/work/getAllWork" method="get">
+							<input type="hidden" id="courseId" name="courseId" value="223137437">
+							<input type="hidden" id="isdisplaytable" name="isdisplaytable" value="2">
+							<input type="hidden" id="mooc" name="mooc" value="1">
+							<input type="hidden" id="issue" name="issue" value="1">
+							<input type="hidden" id="zjtitle" name="chapterId" value="">
+							<input type="hidden" name="classId" value="51876029" id="classId">
+							<input type="hidden" name="isAll" id="isAll" value="0"/>
+							<input type="hidden" name="enc" id="enc" value="0a42d14fca324163cc1467660dd276e2"/>
+							<input type="hidden" name="dirEnc" id="dirEnc" value="8373c4064600e01eff0415b653998535"/>
+							<input type="hidden" name="ut" id="ut" value="t"/>
+                            <input type="hidden" name="openc" id="openc" value="31aea7eb6e55d090fdd12012590e10d4"/>
+                            <input type="hidden" name="cpi" id="cpi" value="93844352"/>
+                            <input type="hidden" name="dirId" id="dirId" value="0"/>
+                            <input type="hidden" name="srcdirId" id="srcdirId" value=""/>
+                            
+                        </form>
+					</div>
+					<!--搜索框结束-->
+										
+					<!--列表内容开始-->
+										<div class="ulDiv" style="margin-top:20px;">
+					    <ul class="clearfix" style="*width:1020px;padding-bottom:0">
+					      							
+						</ul>
+						<ul class="clearfix" style="*width:1020px;">
+	    																		<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=20082287&isdisplaytable=2&mooc=1&ut=t&enc=3b0d7301664e65056534a032859bf75b&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="《中国象棋》项目展示汇报ppt">
+																					《中国象棋》项目展示汇报pp  ... 
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-24 13:58</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl20082287" style="display:inline;font-weight:100;">2022-05-03 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>21/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">21<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=20082287&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19868433&isdisplaytable=2&mooc=1&ut=t&enc=4e2df1dfda7fa9a99b8012607b445955&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="异常课后练习">
+																					异常课后练习     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-18 08:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19868433" style="display:inline;font-weight:100;">2022-04-27 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19868433&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19747472&isdisplaytable=2&mooc=1&ut=t&enc=32c375c428f060465ffcb945acc9b7bd&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="模板-编程作业">
+																					模板-编程作业     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-13 07:30</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19747472" style="display:inline;font-weight:100;">2022-04-21 23:30</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>59/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19747472&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19668975&isdisplaytable=2&mooc=1&ut=t&enc=638a40e2dbfdbcbf7c32390c7fd95294&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="继承与多态综合练习-计算器">
+																					继承与多态综合练习-计算器     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-11 12:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19668975" style="display:inline;font-weight:100;">2022-04-11 23:30</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19668975&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19668685&isdisplaytable=2&mooc=1&ut=t&enc=ba95e278c3a643b79865931ac7e40817&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="选做作业——中国象棋">
+																					选做作业——中国象棋     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-11 12:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19668685" style="display:inline;font-weight:100;">2022-04-30 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>23/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">23<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19668685&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19514976&isdisplaytable=2&mooc=1&ut=t&enc=da33ef6cbf8c24f79c450417a7dd679b&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="多态上机作业">
+																					多态上机作业     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-06 08:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19514976" style="display:inline;font-weight:100;">2022-04-17 23:30</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>59/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19514976&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19462266&isdisplaytable=2&mooc=1&ut=t&enc=6be82f65c80bfc6f4d249d6d0aa39ba3&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="派生与继承练习- 定义玉兰卡">
+																					派生与继承练习- 定义玉兰卡     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-04-04 12:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19462266" style="display:inline;font-weight:100;">2022-04-04 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19462266&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19340926&isdisplaytable=2&mooc=1&ut=t&enc=95c66ef9a8170ff2a1f180ac210baf65&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="继承的编码练习-（题目内容不变）">
+																					继承的编码练习-（题目内容不  ... 
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-30 19:50</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19340926" style="display:inline;font-weight:100;">2022-04-07 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>57/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19340926&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19308666&isdisplaytable=2&mooc=1&ut=t&enc=9d17d7cf36e6d9602b7f19f707d84349&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="继承">
+																					继承     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-30 07:48</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19308666" style="display:inline;font-weight:100;">2022-03-30 19:51</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>0/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19308666&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19212079&isdisplaytable=2&mooc=1&ut=t&enc=915f6710080071163b2b33c8f39dbe43&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="运算符重载作业2-整型数组">
+																					运算符重载作业2-整型数组     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-27 21:56</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19212079" style="display:inline;font-weight:100;">2022-03-30 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>58/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19212079&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=19021435&isdisplaytable=2&mooc=1&ut=t&enc=6833507822ce22121b98fd4dd0ae56e4&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="运算符重载作业（01/05）">
+																					运算符重载作业（01/05）     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-22 18:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl19021435" style="display:inline;font-weight:100;">2022-03-30 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>59/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=19021435&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=18922672&isdisplaytable=2&mooc=1&ut=t&enc=e91b766f2f4b3a2dd5dccd6f2c284d71&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="第4周上机当堂练习——类的组合巩固">
+																					第4周上机当堂练习——类的组  ... 
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-21 17:00</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl18922672" style="display:inline;font-weight:100;">2022-03-21 21:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>59/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=18922672&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=18673318&isdisplaytable=2&mooc=1&ut=t&enc=bc9915d0ca39a012357eb5d9d9d0eb07&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="类与对象上机题2-调整（题目内容没变）">
+																					类与对象上机题2-调整（题目  ... 
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-14 21:29</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl18673318" style="display:inline;font-weight:100;">2022-03-23 23:29</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=18673318&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=18653306&isdisplaytable=2&mooc=1&ut=t&enc=7323637316b3711462ba4f4104c9d171&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="第3周上机当堂测试">
+																					第3周上机当堂测试     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-14 17:30</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl18653306" style="display:inline;font-weight:100;">2022-03-14 20:30</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=18653306&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=18608356&isdisplaytable=2&mooc=1&ut=t&enc=52fc220821f135b60c8e71ec8d1394ec&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="类与对象上机题2">
+																					类与对象上机题2     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-14 07:13</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl18608356" style="display:inline;font-weight:100;">2022-03-14 21:30</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>0/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=18608356&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=18314601&isdisplaytable=2&mooc=1&ut=t&enc=4f4c4c98e59dcef8a5b5e5a94a8faf00&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="类与对象1">
+																					类与对象1     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-03-06 21:21</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl18314601" style="display:inline;font-weight:100;">2022-03-16 23:00</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=18314601&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+														<li class="lookLi" >
+																
+								<div class="titTxt">
+																											<p>
+										<a href="javascript:;" onclick="location.href='/work/viewWork?courseId=223137437&classId=51876029&id=17997488&isdisplaytable=2&mooc=1&ut=t&enc=e300591f30402c666fffd6eeabfdf564&openc=31aea7eb6e55d090fdd12012590e10d4';"  title="第一周课后作业">
+																					第一周课后作业     
+																				</a>
+																			</p>
+										
+									<span class="pt5">
+																					<span class="fl">开始时间：</span><i>2022-02-27 18:14</i>
+																			</span>
+									
+																			<span id="eTime" class="pt5">
+																							<span class="fl">截止时间：</span><i><span id="dl17997488" style="display:inline;font-weight:100;">2022-03-09 23:30</span></i>
+																																</span>
+																			
+																			<span class="pt5"><span class="fl">提交数：</span><i>60/60</i></span>
+																	</div>
+								
+								<div class="titOper">
+																		<strong style="color:#f44336;">0<span>份待批</span></strong>
+																		<div style="margin-left:160px;">
+										<p style="float:none;width:130px;" class="clearfix">
+											                                            <a class="Btn_blue_1 fr" style="height:25px;line-height:25px;font-size:12px;" href="/work/reviewTheList?courseId=223137437&classId=51876029&workId=17997488&isdisplaytable=2&mooc=1&isWork=true&workSystem=0&openc=31aea7eb6e55d090fdd12012590e10d4&ut=t"><span title="">查看</span></a>
+										</p>
+									</div>
+								</div>
+								<div class="shadow"></div>
+							</li>
+													
+													</ul>
+					</div>
+					<div class="page"></div>
+										<!--列表内容结束-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<input type="hidden" value="" id="workId"/>
+	<!-- 作业删除框 -->
+	<div style="width:578px;height:220px;display:none;padding:0" class="AlertCon02" id="del_work">
+		<h3 class="clearfix editDate">删除作业<a class="closed02 fr" href="javascript:void(0)" onclick="WAY.box.hide();$('#del_work').css('display','none');" ></a></h3>
+		<div class="con03">
+	    	<p>删除的作业可以在回收站中恢复</p>
+	    		    	<p style="padding:10px 0 0 0">应用范围:<label><input type="checkbox" name="" id="delSyncAll" style="margin: 0 4px 3px 10px; width: 16px; height: 16px;">同步所有班级</label></p>
+	        <div class="marTop30">
+	        	<a class="bluebtn" href="javascript:void(0)" onclick="confirmDelete();" style="width:76px;height:36px;line-height:36px;text-align:center;">删除</a>
+	            <a class="btnGray_1 marleft10" href="javascript:void(0)" onclick="WAY.box.hide();$('#del_work').css('display','none');" style="width:76px;height:36px;line-height:36px;text-align:center;color:#666;background:#e6e6e6;">取消</a>
+	        </div>
+	    </div>
+	</div>
+
+	<!--删除提示框-->
+	<div style="width:338px;height:149px;display:none;" class="AlertCon02" id="del_success">
+		<h3 class="clearfix"><a class="closed02 fr" href="javascript:void(0)" onclick="WAY.box.hide();$('#del_success').css('display','none');" ></a></h3>
+		<div class="con03">
+	    	<p id="deleteTip">删除成功！</p>
+	        <div class="marTop30">
+	        	<a class="bluebtn" href="javascript:void(0)" onclick="WAY.box.hide();$('#del_success').css('display','none');">确定</a>
+	        </div>
+	    </div>
+	</div>
+	
+	<!-- 作业延期框 -->
+	<div style="width:578px;height:230px;display:none;padding:0" class="AlertCon02" id="editEndtime">
+		<h3 class="clearfix editDate">修改日期<a class="closed02 fr" href="javascript:void(0)" onclick="WAY.box.hide();$('#editEndtime').css('display','none');" ></a></h3>
+		<div class="con03">
+			<input type="hidden" id="newTime" value="2022-05-14 21:17:49"/>
+			截止时间：
+			<label><input name="endTimeRadio" type="radio" value="0">&nbsp;&nbsp;立即截止</label>
+			<label style="margin-left:20px"><input name="endTimeRadio" type="radio" value="1" checked="checked">&nbsp;&nbsp;定时截止</label>	
+			<input type="text" value="" id="endTime" class="inpTxt" style="width:137px;border:1px solid #d1d1d1;height:29px;line-height:28px;padding:0 3px" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'newTime\')}',dateFmt:'yyyy-MM-dd HH:mm'});" readonly="readonly"/>
+			<input type="hidden" value="" id="tmpDate"/>
+			<p style="padding:10px 0 0 54px;text-align:left;">应用范围:<label><input id="timeSyncAll" type="checkbox" name="" style="margin: 0 4px 3px 10px; width: 16px; height: 16px;">同步所有班级</label></p>
+	        <div class="marTop30">
+	        	<a class="bluebtn02 " href="javascript:void(0)" onclick="confirmUpdate();" style="width:76px;text-align:center;height:36px;line-height:36px;">确定</a>
+	            <a class="graybtn02 marleft10" href="javascript:void(0)" onclick="WAY.box.hide();$('#editEndtime').css('display','none');" style="width:76px;text-align:center;height:36px;line-height:36px;color:#666;border:none;background:#e6e6e6;margin-left:15px;">取消</a>
+	        </div>
+	    </div>
+	</div>
+
+	<!-- 修改互评时间框 -->
+	<div style="width:578px;height:280px;display:none;padding:0" class="AlertCon02" id="editEvaluationtime">
+		<h3 class="clearfix editDate">修改日期<a class="closed02 fr" href="javascript:void(0)" onclick="WAY.box.hide();$('#editEvaluationtime').css('display','none');" ></a></h3>
+		<div class="con03">
+	    	<p>互评开始时间改为：<input type="text" value="" id="evaluationStartTime" name="evaluationStartTime" class="inpTxt" style="width:137px;border:1px solid #d1d1d1;height:29px;line-height:28px;padding:0 3px;margin-bottom:10px;" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'newTime\')}',dateFmt:'yyyy-MM-dd HH:mm'});" readonly="readonly"/></p>
+			<p>互评截止时间改为：<input type="text" value="" id="evaluationEndTime" name="evaluationEndTime" class="inpTxt" style="width:137px;border:1px solid #d1d1d1;height:29px;line-height:28px;padding:0 3px;margin-bottom:10px;" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'evaluationStartTime\')}',dateFmt:'yyyy-MM-dd HH:mm'});" readonly="readonly"/></p>
+			<p style="padding:10px 0 0 38px;text-align:center;">应用范围:<label><input id="evaluatitimeSyncAll" type="checkbox" name="" style="margin: 0 4px 3px 10px; width: 16px; height: 16px;">同步所有班级</label></p>
+			<div class="marTop30">
+	        	<a class="bluebtn02 " href="javascript:void(0)" onclick="confirmEvaluationTime();" style="width:76px;text-align:center;height:36px;line-height:36px;">确定</a>
+	            <a class="graybtn02 marleft10" href="javascript:void(0)" onclick="WAY.box.hide();$('#editEvaluationtime').css('display','none');" style="width:76px;text-align:center;height:36px;line-height:36px;color:#666;border:none;background:#e6e6e6;margin-left:15px;">取消</a>
+	        </div>
+	
+	    </div>
+	</div>
+    <!-- 创建作业文件 -->
+    <div class="wid400" style="display:none;" id="dir" >
+			<div class="popHead"><a href="javascript:;" onclick="WAY.box.hide();$('#dir').css('display','none');"  class="closePic"><img width="100%" height="100%" src="/space/new/worklist/images/popClose.png" /></a>建文件夹</div>
+				<div class="wid286 marTop30">
+					<div class="inpuCon">
+						<input class="inp216" type="type" id="dirname" placeholder='输入文件夹名'/>  
+					</div>
+				</div>
+			<div class="bomDiv">
+					<a href="javascript:;" onclick="WAY.box.hide();$('#dir').css('display','none');"   class="grayBtn">取消</a>
+					<a href="javascript:;" id="createDir" class="greenBtn">完成</a>
+			</div>
+	</div>
+	<!-- 重命名 -->
+	<input type="hidden" id="reNameDirId" name="reNameDirId" value="">
+	<div class="wid400" style="display:none;" id="rename" >
+			<div class="popHead"><a href="javascript:;" onclick="WAY.box.hide();$('#rename').css('display','none');"  class="closePic"><img width="100%" height="100%" src="/space/new/worklist/images/popClose.png" /></a>重命名</div>
+				<div class="wid286 marTop30">
+					<div class="inpuCon">
+						<input class="inp216" type="type" id="re-dirname" placeholder="" />  
+					</div>
+				</div>
+			<div class="bomDiv">
+					<a href="javascript:;" onclick="WAY.box.hide();$('#rename').css('display','none');" class="grayBtn">取消</a>
+					<a href="javascript:;" id="reNameFinish" class="greenBtn" onClick="reNameFinish()">完成</a>
+			</div>
+	</div>
+	<!-- 删除提示框 -->
+	<div id="del_workDir" style="display:none;">
+   		<div class="clearfix" style="width:380px;background:#fff;">
+   		<input type="hidden" id="delDirId" name="delDirId" value="">
+   			<p class="tkCon" style="padding:37px 10px;font-size:18px;">删除后，文件夹内的作业会一并删除</p>
+   			<div  style="text-align:center;height:30px;margin-bottom:28px;">
+   				<a style="display:inline-block;margin:0 10px;height:30px;line-height:30px" class="bluebtn confirmBtn marleft10" onClick="delDirConfirm()">确定</a>
+   				<a style="display:inline-block;margin:0 10px;width:80px;background:#e6e6e6;color:#666;height:30px;line-height:30px" class="confirmBtn confirmBtn" onclick="WAY.box.hide();$('#del_workDir').css('display','none');">取消</a>
+   			</div>
+   		</div>
+    </div>
+	<div style=" width:580px; position:absolute; overflow:hidden; left:80%; margin-left:-268px; top:50%; z-index:9999;display:none;" id="wkd_menu_box" class="pubPopUp_box">
+		<div class="pubBox_top"><a onclick="WAY.box.hide();$('#wkd_menu_box').css('display','none');" href="javascript:void(0)"></a>移动题目/文件夹</div>
+	    <div class="pubBox_Con">
+			<input type="hidden" id="sourceDataType" name="sourceDataType" value=""/>
+			<input type="hidden" id="sourceDataId" name="sourceDataId" value=""/>
+	        	<div class="pBCon_tit">选择移动到的位置</div>
+	            <div style="height:200px; overflow:hidden; overflow-y:auto; padding:0; zoom:1;" id="pBCon_ul" class="pBCon_ul">
+	            	<p id="onep"  class="fileTit bgColor_e6f"  name="0">
+	            	<img src="/space/new/moocIndex/images/bbsloading.gif" class="fl" id="load_img" />
+	            	<a class="menuIco" href="javascript:void(0)">
+	            	<i class="minus"></i><i class="filOpen"></i>
+	            	</a>
+	            	<span><strong><a onclick='explose(0)'>>题目目录</a></strong></span>
+	            	</p>
+	            </div>
+	            <div style="padding-top:20px;text-align:right;"><a style="margin-right:20px;width:76px;height:36px;line-height:36px;text-align:center" class="bluebtn" href="javascript:void(0)" onclick="movedata();">确定</a><a class="graybtn " style="width:76px;height:36px;line-height:36px;text-align:center;" href="javascript:void(0)" onclick="WAY.box.hide();$('#wkd_menu_box').css('display','none');">取消</a></div>
+	        </div>
+	    </div>
+</div>
+<script type="text/javascript">
+	$(".updateworkview").click(function(){
+		var cpi = $("#cpi").val();
+		var courseId = $("#courseId").val();
+		var cpi = $("#cpi").val();
+		$.ajax({
+	       type: "get",
+		   dataType:"json",
+	       url: "/work/setworkviewtype",
+	       data : {
+				"cpi" : cpi,
+				"courseId" : courseId,
+				"workViewType" : 1
+	       },
+	       success: function(json){
+	       		loadPage();
+	       }
+	    });
+		
+	})
+	function reEdit(status,id,title) {
+		if(status == 0) {
+            location.href = "/work/selectWorkQuestion?courseId=223137437&classId=51876029&workId=" + id + "&p=edit&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4";
+		} else {
+            location.href = "/work/toAddWorkPage?type=4&courseId=223137437&classId=51876029&flag=select&title=" + title + "&workId=" + id + "&status=" + status + "&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4";
+		}
+	}
+	
+	function clicked(ele,e){
+		e = e||window.event;
+		var ul = ele.getElementsByTagName("ul")[0];
+		
+		var height = ul.getElementsByTagName("li").length * 23;
+		height = height > 200 ? "200px" : (height + "px"); 
+		ul.style.height = height;
+		
+		ul.style.display = 	ul.style.display == "block" ? "none" : "block";
+		stopPropagation(e);
+		return false;
+	}
+	function checkIt(ele, value){
+		var sw = $("#sw").val();
+		var p = ele.parentNode.parentNode.parentNode.getElementsByTagName("p")[0];
+		p.innerText = ele.innerText;
+		
+		if(sw.replace(/(^\s*)|(\s*$)/,'') == "请输入关键字") {
+			sw = "";
+		}
+		if(value == 1){
+            location.href = "/work/getAllWork?courseId=223137437&issue=1" + "&sw=" + sw + "&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4";
+		}else{
+            location.href = "/work/getAllWork?classId=" + value + "&courseId=223137437&issue=1&classId=" + value + "&sw=" + sw + "&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4";
+		}
+		return false;
+	}
+	
+	//根据关键词检索作业
+	function searchWork() {
+		var sw = $("#sw").val();
+    	if(sw.replace(/(^\s*)|(\s*$)/,'')=='' || sw.replace(/(^\s*)|(\s*$)/,'') == "请输入关键字") {
+    		alert("检索词不能为空");
+    	} else {
+			var classId = $("#classId").val();
+    		if(classId == ""){
+                location.href = "/work/getAllWork?courseId=223137437&issue=1&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4&sw=" + encodeURI(sw);
+    		}else{
+                location.href = "/work/getAllWork?courseId=223137437&issue=1&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4&classId=" + classId + "&sw=" + encodeURI(sw);
+    		}
+    	}
+	}
+	
+	
+	function searchWorkDir(dirId){
+		let courseId=$("#courseId").val();
+		let classId=$("#classId").val();
+		let cpi=$("#cpi").val();
+		let enc=$("#enc").val();
+		let ut=$("#ut").val();
+		location.href = "/work/getAllWork?enc=0a42d14fca324163cc1467660dd276e2&ut="+ut+"&courseId=223137437&issue=1&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4&classId=" + classId + "&dirId=" + dirId;
+	}
+	function copyWork(workId) {
+		if(window.confirm("确认复制？")){
+            location.href = "/work/toAddWorkPage?courseId=223137437&classId=51876029&copy=true&workId=" + workId + "&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4";
+		}
+	}
+	
+	function copyXianxiaWork(workId,title) {
+		if(window.confirm("确认复制？")){
+            location.href = "/work/toAddWorkPage?courseId=223137437&classId=51876029&copy=xianxia&workId=" + workId + "&title=" + title + "&status=1&isdisplaytable=2&mooc=1&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4";
+		}
+	}
+	
+	function stopPropagation(event){
+		if(event.stopPropagation){
+			event.stopPropagation();
+		}else{
+			event.cancelBubble = true;
+		}
+	}
+	document.onclick = function(){document.getElementById("options").style.display = "none";}
+	
+	page.showPage(1,1,"changePage", "首页", "尾页");
+    function changePage(pageNum){
+        location.href = "/work/getAllWork?courseId=223137437&ut=t&classId=51876029&classId=51876029&pageNum=" + pageNum + "&issue="+1+
+        "&pastNumCount=&pastPageNo=&isdisplaytable=2&mooc=1&enc=0a42d14fca324163cc1467660dd276e2&openc=31aea7eb6e55d090fdd12012590e10d4&dirId=0";
+	}
+</script>
+<script>
+
+//考试延期弹出框
+function editEndTime(id, endTime,evaluationStartTime) {
+	$("#workId").val(id);
+	$("#endTime").val(endTime.substring(0,16));
+	$("#tmpDate").val(evaluationStartTime);
+	WAY.box.show({'divid':'editEndtime'});
+}
+
+//确认修改截止日期
+function confirmUpdate() {
+    var endTimeRadio = $("input[name='endTimeRadio']:checked").val();
+	var endTime = "";
+	var isEndNow = false;
+	if (endTimeRadio == 1) {
+		endTime = $("#endTime").val();
+	}else {
+		isEndNow = true;
+	}
+	
+	var evaluationStartTime = $("#tmpDate").val();
+	var workId = $("#workId").val();
+	var classId = $("#classId").val();
+	
+	if(endTime.length > 0) {
+		endTime += ":00";
+	}
+    
+	if(evaluationStartTime != '0'){
+		if(endTimeRadio == 1 && endTime.length == 0) {
+			alert("互评作业需设置结束时间！");
+			return false;
+		}
+		if(evaluationStartTime.length > 0 && endTime.length > 0){     
+           if(evaluationStartTime < endTime){   
+				alert("作业截止日期不能大于互评开始日期");     
+				return false;
+            }
+    	}
+	}
+	var syncAll = 0;
+    if ($("#timeSyncAll").is(":checked")) {
+    	syncAll = 1;
+    }
+	
+	$.ajax({
+	
+       type: "get",
+	   dataType:"json",
+       url: "/work/updateEndTime",
+       data : {
+			"id" : workId,
+			"courseId" : "223137437",
+			"endTime" : endTime,
+			"classId" : classId,
+			"isEndNow" : isEndNow,
+			"snycAll":syncAll
+       },
+       success: function(json){
+	   	if(json.status == true) {
+			//$("#dl" + workId).text(endTime.substring(0,16));
+			WAY.box.hide();
+			$('#editEndtime').css('display','none');
+			
+			setTimeout("loadPage()",2000);
+		} 
+		alert(json.msg);
+       }
+    });
+}
+
+function loadPage(){
+	location.reload();
+}
+
+function delWork(workId){
+	$("#workId").val(workId);
+	WAY.box.show({'divid':'del_work'});
+}
+
+function confirmDelete() {
+	WAY.box.hide();$('#del_work').css('display','none');
+	var workId = $("#workId").val();
+	var classId = $("#classId").val();
+	var courseId = $("#courseId").val();
+	var dirId=$("#dirId").val();
+	var syncAll = 0;
+    if ($("#delSyncAll").is(":checked")) {
+    	syncAll = 1;
+    }
+	
+	
+	$.ajax({
+	
+		type : "get",
+		url : "/work/deleteWork",
+		data : {
+			"id" : workId,
+			"classId" : classId,
+			"courseId" : courseId,
+			"dirId":dirId,
+			'syncAll':syncAll
+		},
+		success : function(data){
+			$("#deleteTip").html(data.msg);
+			WAY.box.show({'divid':'del_success'});
+			$("#del" + workId).parents("li").remove();
+		}
+	});
+}
+//
+function toCreateDir(){
+	WAY.box.show({'divid':'dir'});
+}
+//创建空白作业
+function toCreateWork(){
+	var  timestamp = Date.parse(new Date());
+	var  courseId = jQuery("#courseId").val();
+	var  classId = jQuery("#classId").val();
+    var cpi = jQuery("#cpi").val();
+    var openc = jQuery("#openc").val();
+	var  isdisplaytable = jQuery("#isdisplaytable").val();
+	var  mooc = jQuery("#mooc").val() || 1;
+	jQuery.ajax({
+		url : '/work/createNewWork',
+		type : 'get',
+		data : {
+			'courseId' : courseId,
+			'classId' : classId,
+			'version' : timestamp
+		},
+		dataType : 'json',
+		success : function(data){
+			if(data['success']){
+    			var workId = data['workId'];
+                location.href = '/work/goToWorkEditor?courseId=' + courseId + '&classId=' + classId + '&isdisplaytable=' + isdisplaytable + '&mooc=' + mooc + '&workId=' + workId + '&cpi=' + cpi + '&openc=' + openc;
+			}
+		}
+	});
+}
+
+
+//修改互评时间弹出框
+function editEvaluationTime(id, endTime, evaluationStartTime, evaluationEndTime) {
+	$("#workId").val(id);
+	$("#endTime2").val(endTime.substring(0,16));
+	$("#evaluationStartTime").val(evaluationStartTime.substring(0,16));
+	$("#evaluationEndTime").val(evaluationEndTime.substring(0,16));
+	WAY.box.show({'divid':'editEvaluationtime'});
+}
+
+//确认修改互评时间
+function confirmEvaluationTime() {
+	var workId = $("#workId").val();;
+	var endTime = $("#endTime2").val();
+	var evaluationStartTime = $("#evaluationStartTime").val();
+    var	evaluationEndTime = $("#evaluationEndTime").val();
+	var workId = $("#workId").val();
+	var classId = $("#classId").val();
+	
+	if(endTime == "" || endTime.length == 0){
+		alert("请输入作业截止时间");
+		return;
+	}
+	endTime += ":00";
+	
+	if (evaluationStartTime == "" || evaluationStartTime.length == 0) {
+		alert("请输入互评开始时间");     
+		return; 
+	}
+	
+	if (evaluationEndTime == "" || evaluationEndTime.length == 0) {
+		alert("请输入互评结束时间");     
+		return; 
+	}
+	
+	evaluationStartTime += ":00";
+	evaluationEndTime += ":00";
+	
+    if(evaluationStartTime > evaluationEndTime){   
+        alert("互评开始日期不能大于互评截止日期");     
+        return;     
+    }
+    
+    var syncAll = 0;
+    if ($("#evaluatitimeSyncAll").is(":checked")) {
+    	syncAll = 1;
+    }
+	var flag = true;
+    var flag1 = true;
+	var msg = "";
+	jQuery.ajax({
+		type : "get",
+		async : false,
+		url : "/work/checkEvalDate",
+		data : {
+			"endTime" : endTime,
+			"evaluationStartTime" : evaluationStartTime,
+			"evaluationEndTime" : evaluationEndTime,
+			"syncAll":syncAll
+		},
+		success : function(data){
+			var json = JSON.parse(data);
+			if(json.status == 0) {
+				msg = json.msg;
+				flag = false;
+			}
+		}
+	});
+	
+	if(flag == false) {
+		alert(msg);
+		return;
+	}
+	
+	
+	$.ajax({
+	
+       type: "get",
+	   dataType:"json",
+       url: "/work/updateEvaluationTime",
+       data : {
+			"id" : workId,
+			"courseId" : "223137437",
+			"evaluationStartTime" : evaluationStartTime,
+			"evaluationEndTime" : evaluationEndTime,
+			"classId" : classId,
+			"syncAll":syncAll
+       },
+       success: function(json){
+	   	if(json.status == true) {
+			WAY.box.hide();
+			$('#editEvaluationtime').css('display','none');
+			
+			setTimeout("loadPage()",2000);
+		} 
+		alert(json.msg);
+       }
+    });
+}
+
+function recycleBin() {
+	location.href = "/work/getAllWork?courseId=223137437&classId=51876029&isdisplaytable=2&mooc=1&ut=t&issue=1"
+		+"&workSystem=0&enc=0a42d14fca324163cc1467660dd276e2&cpi=93844352&openc=31aea7eb6e55d090fdd12012590e10d4&recycle=1";
+}
+
+</script>
+</div>
+</body>
+</html>
