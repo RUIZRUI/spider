@@ -10,11 +10,11 @@ sidList = []
 # 分数列表
 scoreList = []
 # sheet数量
-sheetNumber = 9
+sheetNumber = 7
 # 学生数量
 stuNumber = 60
 # 每个sheet总分
-totalScoreList = [10, 10, 10, 20, 5, 10, 10, 20, 2]
+totalScoreList = [10, 10, 10, 20, 10, 10, 20]
 # 分数列索引（从0开始）
 columnIndex = 6
 
