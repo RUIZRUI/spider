@@ -126,7 +126,13 @@ def getGameData(rating, gameItem):
 	ret.encoding = ret.apparent_encoding
 
 	soup = BeautifulSoup(ret.text, 'html.parser')
-	gameInfoDiv = soup.find('body').find(name='div', class_='content zqwrap').find(name='div', class_='ZQ_Left')
+
+	try:
+		gameInfoDiv = soup.find('body').find(name='div', class_='content zqwrap').find(name='div', class_='ZQ_Left')
+	except:
+		print('此条目不支持爬取')
+		print()
+		return None
 
 	# 游戏ID
 	gameDataDict['id'] = rating
@@ -164,7 +170,7 @@ def getGameData(rating, gameItem):
 	# 游戏评分人数
 	gameDataDict['raterNum'] = scoreDiv.find(name='div', class_='txt').find('span').text
 	# 游戏图像
-	gameDataDict['img'] = gameInfoDiv.find(name='div', class_='img').find('img').get('src')
+	gameDataDict['img'] = gameInfoDiv.find(name='div', class_='img').find('img').get('data-original')
 
 	# 游戏简介
 	gameIntroductionDiv = soup.find(name='div', class_='content zqwrap').find(name='div', class_='ZQ_Left').find(name='div', class_='buy').find(name='div', class_='miaoshu')
@@ -201,7 +207,7 @@ def getConn():
 	返回：
 		连接
 	"""
-	conn = mysql.connector.connect(user='root', passwd='1214', database='design_pattern')
+	conn = mysql.connector.connect(user='root', passwd='0508', database='game_forum')
 
 	return conn
 
@@ -245,12 +251,15 @@ def transformDate(dateStr):
 	返回：
 		正确日期格式的字符串
 	"""
+	dateStr = dateStr.strip()[0:10]
 	try:
 		dateStr = dateStr[0:10]
 		time.strptime(dateStr, '%Y-%m-%d')
 		return dateStr
 	except:
 		if dateStr == '':
+			return None
+		elif dateStr.strip() == '未知':
 			return None
 		else:
 			return dateStr[0:4] + '-01-01'		# 测试
@@ -333,6 +342,8 @@ if __name__ == '__main__':
 			rating += 1
 			# 获取游戏数据
 			tempDict = getGameData(rating, gameItem)
+			if tempDict is None:
+				continue
 			# 根据真实图像链接，下载图像
 			downloadImg(tempDict['img'])
 			# 修改图像链接，为本网站地址

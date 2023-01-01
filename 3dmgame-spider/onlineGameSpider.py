@@ -143,7 +143,8 @@ def getGameData(gameUrl):
 	# 游戏评分人数
 	gameDataDict['raterNum'] = scoreDiv.find(name='div', class_='txt').find('span').text
 	# 游戏图像
-	gameDataDict['img'] = gameInfoDiv.find('img').get('src')
+	gameDataDict['img'] = gameInfoDiv.find('img').get('data-original')
+	# print(gameInfoDiv.find('img').get('data-original'))
 
 	# 游戏简介
 	gameIntroductionDiv = soup.find(name='div', class_='content').find(name='div', class_='item2')
@@ -184,7 +185,7 @@ def getConn():
 	返回：
 		连接
 	"""
-	conn = mysql.connector.connect(user='root', passwd='1214', database='design_pattern')
+	conn = mysql.connector.connect(user='root', passwd='0508', database='game_forum')
 
 	return conn
 

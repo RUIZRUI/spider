@@ -37,7 +37,7 @@ def databaseInit():
 	"""
 	功能：
 		初始化数据库
-		创建数据库 design_pattern
+		创建数据库 game_forum
 		创建表 single_game
 		创建表 android_game
 		创建表 ios_game
@@ -49,7 +49,7 @@ def databaseInit():
 	# 获取操作游标
 	cursor = conn.cursor()
 
-	# 创建数据库 design_pattern
+	# 创建数据库 game_forum
 	sql = 'create database if not exists ' + mysqlInfo['database']
 	cursor.execute(sql)
 

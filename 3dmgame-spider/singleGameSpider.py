@@ -196,7 +196,7 @@ def getConn():
 	返回：
 		连接
 	"""
-	conn = mysql.connector.connect(user='root', passwd='1214', database='design_pattern')
+	conn = mysql.connector.connect(user='root', passwd='0508', database='game_forum')
 
 	return conn
 
@@ -240,11 +240,14 @@ def transformDate(dateStr):
 	返回：
 		正确日期格式的字符串
 	"""
+	dateStr = dateStr.strip()[0:10]
 	try:
 		time.strptime(dateStr, '%Y-%m-%d')
 		return dateStr
 	except:
 		if dateStr == '':
+			return None
+		elif dateStr.strip() == '未知':
 			return None
 		else:
 			return dateStr[0:4] + '-01-01'		# 测试
@@ -316,7 +319,7 @@ def getJson(filePath):
 if __name__ == '__main__':
 	getJson('properties.json')
 	conn = getConn()
-	pageUrlList = getPageUrl(1, 3)
+	pageUrlList = getPageUrl(1, 2)
 	for pageUrl in pageUrlList:
 		gameUrlList = getGameUrl(pageUrl)
 		

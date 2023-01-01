@@ -319,12 +319,12 @@ create table if not exists base_game(
 
 
 -- 创建触发器日志表
-create table if not exists trigger_log(
+/* create table if not exists trigger_log(
 	`log_id` int(11) primary key auto_increment,
 	`trigger_name` varchar(255) not null,
 	`content` varchar(255) not null,
 	`log_time` timestamp default current_timestamp()
-)
+) */
 
 
 -- single_game 的触发器

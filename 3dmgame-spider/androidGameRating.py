@@ -30,9 +30,9 @@ def getPageUrl():
 
 	参数：
 		start 满足 start >= 1
-		第一页：https://shouyou.3dmgame.com/android/1_1_1_hot/
-		第二页：https://shouyou.3dmgame.com/android/1_1_2_hot/
-		最后一页：https://shouyou.3dmgame.com/android/1_1_2009_hot/
+		第一页：https://shouyou.3dmgame.com/android/1_1_1/
+		第二页：https://shouyou.3dmgame.com/android/1_1_2/
+		最后一页：https://shouyou.3dmgame.com/android/1_1_2009/
 
 	返回：
 		指定区间的页面链接组成的列表
@@ -181,7 +181,7 @@ def getConn():
 	返回：
 		连接
 	"""
-	conn = mysql.connector.connect(user='root', passwd='1214', database='design_pattern')
+	conn = mysql.connector.connect(user='root', passwd='0508', database='game_forum')
 
 	return conn
 
@@ -224,6 +224,7 @@ def transformDate(dateStr):
 	返回：
 		正确日期格式的字符串
 	"""
+	dateStr = dateStr.strip()[0:10]
 	try:
 		time.strptime(dateStr, '%Y-%m-%d')
 		return dateStr
